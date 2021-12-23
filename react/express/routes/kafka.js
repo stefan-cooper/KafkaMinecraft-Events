@@ -17,25 +17,34 @@ consumer.subscribe({ topic: 'login' })
 consumer.subscribe({ topic: 'ring' })
 consumer.run({ eachMessage: async ({ topic, partition, message }) => { 
   console.log(topic)
-  if (topic === 'motion') motionNotifs.push(message.value.toString()); 
-  else if (topic === 'login') loginNotifs.push(message.value.toString());
-  else if (topic === 'ring') ringNotifs.push(message.value.toString());
+  if (topic === 'motion') motionNotifs.push({value: message.value.toString(), time: new Date().getTime()}); 
+  else if (topic === 'login') loginNotifs.push({value:message.value.toString(), time: new Date().getTime()});
+  else if (topic === 'ring') ringNotifs.push({value:message.value.toString(), time: new Date().getTime()});
   return true } 
 })
 
 router.get("/kafka_motion", (req, res) => {
-  res.json(motionNotifs)
-  motionNotifs = []
+  if (req.query.time) {
+    res.json(motionNotifs.filter(notif => notif.time > req.query.time).map(notif => notif.value))
+  } else {
+    res.sendStatus(400)
+  }
 });
 
 router.get("/kafka_login", (req, res) => {
-  res.json(loginNotifs)
-  loginNotifs = []
+  if (req.query.time) {
+    res.json(loginNotifs.filter(notif => notif.time > req.query.time).map(notif => notif.value))
+  } else {
+    res.sendStatus(400)
+  }
 });
 
 router.get("/kafka_ring", (req, res) => {
-  res.json(ringNotifs)
-  ringNotifs = []
+  if (req.query.time) {
+    res.json(ringNotifs.filter(notif => notif.time > req.query.time).map(notif => notif.value))
+  } else {
+    res.sendStatus(400)
+  }
 });
 
 module.exports = router;

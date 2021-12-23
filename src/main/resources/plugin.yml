@@ -22,6 +22,7 @@ commands:
 #   Do something with the kafka events in React
 #     - Send mobile notifications
 #     - Send email notifications
+#     - Send Browser Notifications ✔
 # Other:
 #   Subscribe (and produce) to other events in Minecraft
 #     - When a player joins the server ✔
